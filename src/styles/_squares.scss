@@ -1,0 +1,155 @@
+@use 'tokens' as *;
+
+.square {
+  width: $square-size;
+  height: $square-size;
+  box-sizing: border-box;
+  display: inline-grid;
+  place-items: center;
+  overflow: hidden;
+  border: $border;
+  background: $black;
+  color: $black;
+  cursor: pointer;
+  padding: 0;
+  font: inherit;
+  transition: background 200ms ease;
+
+  &[data-state~='therapist'][data-state~='available'] { background: $therapist-available; }
+  &[data-state~='therapist'][data-state~='full'] { background: $therapist-full; }
+  &[data-state~='therapist'][data-state~='supervision'] { background: $therapist-supervision; }
+  &[data-state~='therapist'][data-state~='away'] { background: $therapist-away; }
+  &[data-state~='administrator'][data-state~='steady'] { background: $administrator-steady; }
+  &[data-state~='administrator'][data-state~='busy'] { background: $administrator-busy; }
+  &[data-state~='administrator'][data-state~='escalated'] { background: $administrator-escalated; }
+  &[data-state~='administrator'][data-state~='away'] { background: $neutral; }
+  &[data-state~='client'][data-state~='inquiry'] { background: $client-inquiry; }
+  &[data-state~='client'][data-state~='waitlist'] { background: $client-waitlist; }
+  &[data-state~='client'][data-state~='intake'] { background: $client-intake; }
+  &[data-state~='client'][data-state~='active'] { background: $client-active; }
+  &[data-state~='client'][data-state~='paused'] { background: $client-paused; }
+  &[data-state~='client'][data-state~='discharged'] { background: $client-discharged; }
+  &[data-state~='session'][data-state~='scheduled'] { background: $session-scheduled; }
+  &[data-state~='session'][data-state~='completed'] { background: $session-completed; }
+  &[data-state~='session'][data-state~='canceled'] { background: $session-canceled; }
+  &[data-state~='session'][data-state~='no-show'] { background: $session-no-show; }
+  &[data-state~='note'][data-state~='not-started'] { background: $note-not-started; }
+  &[data-state~='note'][data-state~='draft'] { background: $note-draft; }
+  &[data-state~='note'][data-state~='review'] { background: $note-review; }
+  &[data-state~='note'][data-state~='signed'] { background: $note-signed; }
+  &[data-state~='note'][data-state~='late'] { background: $urgent; }
+  &[data-state~='recording'][data-state~='consented'] { background: $recording-consented; }
+  &[data-state~='recording'][data-state~='uploaded'] { background: $recording-uploaded; }
+  &[data-state~='recording'][data-state~='transcribing'] { background: $recording-transcribing; }
+  &[data-state~='recording'][data-state~='ready'] { background: $recording-ready; }
+  &[data-state~='recording'][data-state~='reviewed'] { background: $recording-reviewed; }
+  &[data-state~='recording'][data-state~='delete-due'] { background: $recording-delete-due; }
+  &[data-state~='transcript'][data-state~='transcribing'] { background: $transcript-transcribing; }
+  &[data-state~='transcript'][data-state~='ready'] { background: $transcript-ready; }
+  &[data-state~='transcript'][data-state~='review'] { background: $transcript-review; }
+  &[data-state~='transcript'][data-state~='redaction'] { background: $transcript-redaction; }
+  &[data-state~='transcript'][data-state~='linked'] { background: $transcript-linked; }
+  &[data-state~='task'][data-state~='todo'] { background: $task-todo; }
+  &[data-state~='task'][data-state~='doing'] { background: $task-doing; }
+  &[data-state~='task'][data-state~='blocked'] { background: $task-blocked; }
+  &[data-state~='task'][data-state~='done'] { background: $task-done; }
+  &[data-state~='program'][data-state~='forming'] { background: $program-forming; }
+  &[data-state~='program'][data-state~='open'] { background: $program-open; }
+  &[data-state~='program'][data-state~='full'] { background: $program-full; }
+  &[data-state~='program'][data-state~='waitlist'] { background: $program-waitlist; }
+
+  &[data-state~='elevated'] {
+    outline: 3px solid $warning;
+    outline-offset: -7px;
+  }
+
+  &[data-state~='urgent'],
+  &[data-state~='overdue'],
+  &[data-state~='high'] {
+    outline: 3px solid $urgent;
+    outline-offset: -7px;
+  }
+
+  &[data-state~='paperwork'],
+  &[data-state~='redactions'] {
+    box-shadow: inset 0 0 0 6px rgb(255 255 255 / 60%);
+  }
+
+  &[data-state~='associate'],
+  &[data-state~='unmatched'],
+  &[data-state~='group'],
+  &[data-state~='supervision'] {
+    border-style: dashed;
+  }
+
+  &[data-state~='backlog'],
+  &[data-state~='large-queue'],
+  &[data-state~='busy'],
+  &[data-state~='retention-soon'],
+  &[data-state~='at-capacity'] {
+    box-shadow: inset 0 0 0 6px rgb(0 0 0 / 18%);
+  }
+
+  &[data-draggable='true'] {
+    cursor: grab;
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
+
+  &[data-droppable='true'] {
+    outline: 3px dashed $drop-target;
+    outline-offset: -7px;
+  }
+
+  &:hover,
+  &[data-popup-open] {
+    background: $white !important;
+  }
+}
+
+.squareContext {
+  width: $square-size;
+  height: $square-size;
+  box-sizing: border-box;
+}
+
+.squareAvatar,
+.previewAvatar {
+  display: inline-grid;
+  place-items: center;
+  overflow: hidden;
+  background: $surface-muted;
+  color: $black;
+}
+
+.squareAvatar {
+  width: 100%;
+  height: 100%;
+}
+
+.previewAvatar {
+  width: 64px;
+  height: 64px;
+  flex: 0 0 auto;
+  border: $border;
+}
+
+.avatarImage,
+.avatarFallback {
+  width: 100%;
+  height: 100%;
+}
+
+.avatarImage {
+  display: block;
+  object-fit: contain;
+}
+
+.avatarFallback {
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  font-weight: 700;
+}

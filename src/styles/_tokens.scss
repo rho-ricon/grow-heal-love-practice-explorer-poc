@@ -1,0 +1,113 @@
+$black: black;
+$white: white;
+$text-muted: #555;
+$text-subtle: #666;
+$neutral: #d4d4d4;
+$surface-muted: #f7f2ea;
+
+$available: #22c55e;
+$active: #16a34a;
+$steady: #38bdf8;
+$scheduled: #60a5fa;
+$working: #facc15;
+$review: #a855f7;
+$waitlist: #c084fc;
+$warning: #f97316;
+$urgent: #ef4444;
+$signed: #14b8a6;
+$blocked: #dc2626;
+$done: #86efac;
+$paper: #fff7ed;
+$drop-target: #06b6d4;
+
+$therapist-available: $available;
+$therapist-full: $warning;
+$therapist-supervision: $review;
+$therapist-away: $neutral;
+$administrator-steady: $steady;
+$administrator-busy: $working;
+$administrator-escalated: $urgent;
+$client-inquiry: $paper;
+$client-waitlist: $waitlist;
+$client-intake: #67e8f9;
+$client-active: $active;
+$client-paused: $neutral;
+$client-discharged: $white;
+$session-scheduled: $scheduled;
+$session-completed: $done;
+$session-canceled: $neutral;
+$session-no-show: $urgent;
+$note-not-started: $neutral;
+$note-draft: $working;
+$note-review: $review;
+$note-signed: $signed;
+$recording-consented: #93c5fd;
+$recording-uploaded: #818cf8;
+$recording-transcribing: $working;
+$recording-ready: $available;
+$recording-reviewed: $signed;
+$recording-delete-due: $urgent;
+$transcript-transcribing: $working;
+$transcript-ready: $steady;
+$transcript-review: $review;
+$transcript-redaction: $warning;
+$transcript-linked: $signed;
+$task-todo: $white;
+$task-doing: $working;
+$task-blocked: $blocked;
+$task-done: $done;
+$program-forming: $working;
+$program-open: $available;
+$program-full: $warning;
+$program-waitlist: $waitlist;
+
+$border: 2px solid $black;
+$shadow: 4px 4px 0 $black;
+$square-size: 56px;
+
+@mixin focus-ring {
+  outline: 2px solid $black;
+  outline-offset: 2px;
+}
+
+@mixin panel-shadow($duration: 180ms) {
+  box-shadow: $shadow;
+  transform-origin: var(--transform-origin);
+  transition:
+    opacity $duration ease,
+    transform $duration ease;
+}
+
+@mixin entering-scale($scale: 0.96) {
+  &[data-starting-style],
+  &[data-ending-style] {
+    opacity: 0;
+    transform: scale($scale);
+  }
+}
+
+@mixin action-control {
+  border: $border;
+  background: $white;
+  color: $black;
+  padding: 8px 12px;
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    background 120ms ease,
+    color 120ms ease,
+    box-shadow 120ms ease,
+    transform 120ms ease;
+}
+
+@mixin action-control-hover {
+  background: $white;
+  color: $black;
+  box-shadow: $shadow;
+  transform: translate(-2px, -2px);
+}
+
+@mixin action-control-active {
+  box-shadow: 1px 1px 0 $black;
+  transform: translate(0, 0);
+}

@@ -1,0 +1,93 @@
+@use 'tokens' as *;
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 12px;
+
+  span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    &::before {
+      content: '';
+      width: 10px;
+      height: 10px;
+      border: 1px solid $black;
+      background: $neutral;
+    }
+  }
+}
+
+@mixin legend-color($selector, $color) {
+  .legend span#{$selector}::before {
+    background: $color;
+  }
+}
+
+@include legend-color("[data-state~='therapist'][data-state~='available']", $therapist-available);
+@include legend-color("[data-state~='therapist'][data-state~='full']", $therapist-full);
+@include legend-color("[data-state~='therapist'][data-state~='supervision']", $therapist-supervision);
+@include legend-color("[data-state~='therapist'][data-state~='away']", $therapist-away);
+@include legend-color("[data-state~='administrator'][data-state~='steady']", $administrator-steady);
+@include legend-color("[data-state~='administrator'][data-state~='busy']", $administrator-busy);
+@include legend-color("[data-state~='administrator'][data-state~='escalated']", $administrator-escalated);
+@include legend-color("[data-state~='client'][data-state~='inquiry']", $client-inquiry);
+@include legend-color("[data-state~='client'][data-state~='waitlist']", $client-waitlist);
+@include legend-color("[data-state~='client'][data-state~='intake']", $client-intake);
+@include legend-color("[data-state~='client'][data-state~='active']", $client-active);
+@include legend-color("[data-state~='client'][data-state~='paused']", $client-paused);
+@include legend-color("[data-state~='client'][data-state~='urgent']", $client-active);
+@include legend-color("[data-state~='session'][data-state~='scheduled']", $session-scheduled);
+@include legend-color("[data-state~='session'][data-state~='completed']", $session-completed);
+@include legend-color("[data-state~='session'][data-state~='canceled']", $session-canceled);
+@include legend-color("[data-state~='session'][data-state~='no-show']", $session-no-show);
+@include legend-color("[data-state~='note'][data-state~='not-started']", $note-not-started);
+@include legend-color("[data-state~='note'][data-state~='draft']", $note-draft);
+@include legend-color("[data-state~='note'][data-state~='review']", $note-review);
+@include legend-color("[data-state~='note'][data-state~='signed']", $note-signed);
+@include legend-color("[data-state~='recording'][data-state~='consented']", $recording-consented);
+@include legend-color("[data-state~='recording'][data-state~='uploaded']", $recording-uploaded);
+@include legend-color("[data-state~='recording'][data-state~='transcribing']", $recording-transcribing);
+@include legend-color("[data-state~='recording'][data-state~='ready']", $recording-ready);
+@include legend-color("[data-state~='recording'][data-state~='delete-due']", $recording-delete-due);
+@include legend-color("[data-state~='transcript'][data-state~='transcribing']", $transcript-transcribing);
+@include legend-color("[data-state~='transcript'][data-state~='ready']", $transcript-ready);
+@include legend-color("[data-state~='transcript'][data-state~='review']", $transcript-review);
+@include legend-color("[data-state~='transcript'][data-state~='redaction']", $transcript-redaction);
+@include legend-color("[data-state~='transcript'][data-state~='linked']", $transcript-linked);
+@include legend-color("[data-state~='task'][data-state~='todo']", $task-todo);
+@include legend-color("[data-state~='task'][data-state~='doing']", $task-doing);
+@include legend-color("[data-state~='task'][data-state~='blocked']", $task-blocked);
+@include legend-color("[data-state~='task'][data-state~='done']", $task-done);
+@include legend-color("[data-state~='program'][data-state~='forming']", $program-forming);
+@include legend-color("[data-state~='program'][data-state~='open']", $program-open);
+@include legend-color("[data-state~='program'][data-state~='full']", $program-full);
+@include legend-color("[data-state~='program'][data-state~='waitlist']", $program-waitlist);
+
+.legend span {
+  &[data-state~='urgent']::before,
+  &[data-state~='overdue']::before,
+  &[data-state~='high']::before {
+    outline: 2px solid $urgent;
+    outline-offset: -4px;
+  }
+
+  &[data-state~='paperwork']::before,
+  &[data-state~='redactions']::before {
+    box-shadow: inset 0 0 0 3px rgb(255 255 255 / 65%);
+  }
+
+  &[data-state~='group']::before,
+  &[data-state~='supervision']::before {
+    border-style: dashed;
+  }
+
+  &[data-state~='backlog']::before,
+  &[data-state~='large-queue']::before,
+  &[data-state~='at-capacity']::before {
+    box-shadow: inset 0 0 0 3px rgb(0 0 0 / 20%);
+  }
+}
