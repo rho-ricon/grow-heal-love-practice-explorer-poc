@@ -11,13 +11,14 @@ import { ClientPreview, SessionPreview } from './previews';
 import type { DropMenuState } from './RelationshipDropMenu';
 import { clientSearchText, filterItems, sessionSearchText } from './search';
 import { clientSquareStatus, formatDateTime, sessionSquareStatus } from './status';
-import type { Client, PracticeData, Program } from './types';
+import type { Client, PracticeData, PracticeSession, Program } from './types';
 
 export function ProgramScreen({
   data,
   program,
   dragged,
   onOpenClient,
+  onOpenSession,
   onDragStart,
   onDragEnd,
   onDropMenu,
@@ -26,6 +27,7 @@ export function ProgramScreen({
   program: Program;
   dragged: CarriedPracticeItem | null;
   onOpenClient: (client: Client) => void;
+  onOpenSession: (session: PracticeSession) => void;
   onDragStart: (item: CarriedPracticeItem) => void;
   onDragEnd: () => void;
   onDropMenu: (drop: DropMenuState) => void;
@@ -113,6 +115,7 @@ export function ProgramScreen({
                   label="Group session"
                   getLabel={(session) => `${formatDateTime(session.startsAt)} · ${session.status}`}
                   getStatus={sessionSquareStatus}
+                  onPick={onOpenSession}
                   onDragStart={(session) => onDragStart(sessionToPouchItem(session))}
                   onDragEnd={onDragEnd}
                   onDrop={

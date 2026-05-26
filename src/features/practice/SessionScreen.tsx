@@ -4,115 +4,160 @@ import { GridSection } from '../../components/GridSection';
 import { Screen } from '../../components/Screen';
 import { SquareGrid } from '../../components/SquareGrid';
 import {
+  ClientContextMenu,
   NoteContextMenu,
+  ProgramContextMenu,
   RecordingContextMenu,
   SessionContextMenu,
   TaskContextMenu,
+  TherapistContextMenu,
   TranscriptContextMenu,
 } from './contextMenus';
 import {
+  ClientLegend,
   NoteLegend,
+  ProgramLegend,
   RecordingLegend,
   SessionLegend,
   TaskLegend,
+  TherapistLegend,
   TranscriptLegend,
 } from './legends';
 import {
-  notesForClient,
-  recordingsForClient,
-  sessionsForClient,
-  tasksForClient,
+  clientById,
+  notesForSession,
+  programById,
+  recordingsForSession,
+  tasksForSession,
   therapistById,
-  transcriptsForClient,
+  transcriptsForSession,
 } from './lookups';
 import {
   type CarriedPracticeItem,
+  clientToPouchItem,
   noteToPouchItem,
+  programToPouchItem,
   recordingToPouchItem,
   sessionToPouchItem,
   taskToPouchItem,
+  therapistToPouchItem,
   transcriptToPouchItem,
 } from './pouchItems';
 import {
+  ClientPreview,
   NotePreview,
+  ProgramPreview,
   RecordingPreview,
   SessionPreview,
   TaskPreview,
+  TherapistPreview,
   TranscriptPreview,
 } from './previews';
 import type { DropMenuState } from './RelationshipDropMenu';
 import {
+  clientSearchText,
   filterItems,
   noteSearchText,
+  programSearchText,
   recordingSearchText,
   sessionSearchText,
   taskSearchText,
+  therapistSearchText,
   transcriptSearchText,
 } from './search';
 import {
+  clientSquareStatus,
   formatDateTime,
   noteSquareStatus,
+  programSquareStatus,
   recordingSquareStatus,
   sessionSquareStatus,
   taskSquareStatus,
+  therapistSquareStatus,
   transcriptSquareStatus,
 } from './status';
-import type { Client, PracticeData, PracticeSession } from './types';
+import type { Client, PracticeData, PracticeSession, Therapist } from './types';
 
-export function ClientScreen({
+export function SessionScreen({
   data,
-  client,
+  session,
   dragged,
-  onOpenSession,
+  onOpenClient,
+  onOpenTherapist,
   onDragStart,
   onDragEnd,
   onDropMenu,
 }: {
   data: PracticeData;
-  client: Client;
+  session: PracticeSession;
   dragged: CarriedPracticeItem | null;
-  onOpenSession: (session: PracticeSession) => void;
+  onOpenClient: (client: Client) => void;
+  onOpenTherapist: (therapist: Therapist) => void;
   onDragStart: (item: CarriedPracticeItem) => void;
   onDragEnd: () => void;
   onDropMenu: (drop: DropMenuState) => void;
 }) {
   const [query, setQuery] = useState('');
-  const therapist = therapistById(data, client.therapistId);
-  const clientSessions = sessionsForClient(data, client.id);
-  const clientNotes = notesForClient(data, client.id);
-  const clientRecordings = recordingsForClient(data, client.id);
-  const clientTranscripts = transcriptsForClient(data, client.id);
-  const clientTasks = tasksForClient(data, client.id);
+  const client = clientById(data, session.clientId);
+  const therapist = therapistById(data, session.therapistId);
+  const program = programById(data, session.programId);
+  const sessionNotes = notesForSession(data, session.id);
+  const sessionRecordings = recordingsForSession(data, session.id);
+  const sessionTranscripts = transcriptsForSession(data, session.id);
+  const sessionTasks = tasksForSession(data, session.id);
 
   const sessions = useMemo(
-    () => filterItems(clientSessions, query, sessionSearchText),
-    [clientSessions, query],
+    () => filterItems([session], query, sessionSearchText),
+    [query, session],
+  );
+  const clients = useMemo(
+    () => filterItems(client ? [client] : [], query, clientSearchText),
+    [client, query],
+  );
+  const therapists = useMemo(
+    () => filterItems(therapist ? [therapist] : [], query, therapistSearchText),
+    [query, therapist],
+  );
+  const programs = useMemo(
+    () => filterItems(program ? [program] : [], query, programSearchText),
+    [program, query],
   );
   const notes = useMemo(
-    () => filterItems(clientNotes, query, noteSearchText),
-    [clientNotes, query],
+    () => filterItems(sessionNotes, query, noteSearchText),
+    [query, sessionNotes],
   );
   const recordings = useMemo(
-    () => filterItems(clientRecordings, query, recordingSearchText),
-    [clientRecordings, query],
+    () => filterItems(sessionRecordings, query, recordingSearchText),
+    [query, sessionRecordings],
   );
   const transcripts = useMemo(
-    () => filterItems(clientTranscripts, query, transcriptSearchText),
-    [clientTranscripts, query],
+    () => filterItems(sessionTranscripts, query, transcriptSearchText),
+    [query, sessionTranscripts],
   );
   const tasks = useMemo(
     () =>
-      filterItems(clientTasks, query, (task) =>
+      filterItems(sessionTasks, query, (task) =>
         taskSearchText(task, data.therapists, data.administrators),
       ),
-    [clientTasks, data.administrators, data.therapists, query],
+    [data.administrators, data.therapists, query, sessionTasks],
   );
-  const canDropOnSession = dragged?.kind === 'recording' || dragged?.kind === 'therapist';
   const canDropOnNote = dragged?.kind === 'transcript';
 
-  function handleDropOnSession(sessionId: string, event: DragEvent<HTMLElement>) {
-    const session = clientSessions.find((item) => item.id === sessionId);
-    if (!session || !dragged) return;
+  function handleDropOnNote(noteId: string, event: DragEvent<HTMLElement>) {
+    const note = sessionNotes.find((item) => item.id === noteId);
+    if (!note || dragged?.kind !== 'transcript') return;
+
+    onDropMenu({
+      type: 'transcript-note',
+      transcript: dragged.transcript,
+      note,
+      x: event.clientX,
+      y: event.clientY,
+    });
+  }
+
+  function handleDropOnCurrentSession(event: DragEvent<HTMLElement>) {
+    if (!dragged) return;
 
     if (dragged.kind === 'recording') {
       onDropMenu({
@@ -135,54 +180,113 @@ export function ClientScreen({
     }
   }
 
-  function handleDropOnNote(noteId: string, event: DragEvent<HTMLElement>) {
-    const note = clientNotes.find((item) => item.id === noteId);
-    if (!note || dragged?.kind !== 'transcript') return;
-
-    onDropMenu({
-      type: 'transcript-note',
-      transcript: dragged.transcript,
-      note,
-      x: event.clientX,
-      y: event.clientY,
-    });
-  }
-
   return (
     <Drawer.Content className="screen">
       <Screen
-        title={client.displayName}
+        title={`${client?.displayName || session.id} session`}
         leading={<Drawer.Close className="back">← Back</Drawer.Close>}
         search={query}
         onSearchChange={setQuery}
-        count={`${client.stage} / ${therapist?.name || 'unmatched'} / ${tasks.length} tasks`}
+        count={`${session.status} / ${session.modality} / ${formatDateTime(session.startsAt)}`}
       >
         <div className="sections">
-          <GridSection title="Sessions" empty="No matching sessions.">
+          <GridSection title="Session" empty="No matching session.">
             {sessions.length > 0 && (
               <>
                 <SessionLegend />
                 <SquareGrid
                   items={sessions}
                   label="Session"
-                  getLabel={(session) => `${formatDateTime(session.startsAt)} · ${session.status}`}
+                  getLabel={(item) => `${formatDateTime(item.startsAt)} · ${item.status}`}
                   getStatus={sessionSquareStatus}
-                  onPick={onOpenSession}
-                  onDragStart={(session) => onDragStart(sessionToPouchItem(session))}
+                  onDragStart={(item) => onDragStart(sessionToPouchItem(item))}
                   onDragEnd={onDragEnd}
                   onDrop={
-                    canDropOnSession
-                      ? (session, event) => handleDropOnSession(session.id, event)
+                    dragged?.kind === 'recording' || dragged?.kind === 'therapist'
+                      ? (_item, event) => handleDropOnCurrentSession(event)
                       : undefined
                   }
-                  renderPreview={(session) => (
+                  renderPreview={(item) => (
                     <SessionPreview
-                      session={session}
+                      session={item}
                       client={client}
-                      therapist={therapistById(data, session.therapistId)}
+                      therapist={therapist}
+                      program={program}
                     />
                   )}
-                  renderContextMenu={(session) => <SessionContextMenu session={session} />}
+                  renderContextMenu={(item) => <SessionContextMenu session={item} />}
+                />
+              </>
+            )}
+          </GridSection>
+
+          <GridSection title="Client" empty="No matching client.">
+            {clients.length > 0 && (
+              <>
+                <ClientLegend />
+                <SquareGrid
+                  items={clients}
+                  label="Client"
+                  getLabel={(item) => item.displayName}
+                  getStatus={clientSquareStatus}
+                  onPick={onOpenClient}
+                  onDragStart={(item) => onDragStart(clientToPouchItem(item))}
+                  onDragEnd={onDragEnd}
+                  renderPreview={(item) => (
+                    <ClientPreview
+                      client={item}
+                      therapist={therapistById(data, item.therapistId)}
+                      programs={program ? [program] : []}
+                    />
+                  )}
+                  renderContextMenu={(item) => <ClientContextMenu client={item} />}
+                />
+              </>
+            )}
+          </GridSection>
+
+          <GridSection title="Therapist" empty="No matching therapist.">
+            {therapists.length > 0 && (
+              <>
+                <TherapistLegend />
+                <SquareGrid
+                  items={therapists}
+                  label="Therapist"
+                  getLabel={(item) => item.name}
+                  getStatus={therapistSquareStatus}
+                  onPick={onOpenTherapist}
+                  onDragStart={(item) => onDragStart(therapistToPouchItem(item))}
+                  onDragEnd={onDragEnd}
+                  renderPreview={(item) => (
+                    <TherapistPreview
+                      therapist={item}
+                      supervisor={therapistById(data, item.supervisorId)}
+                    />
+                  )}
+                  renderContextMenu={(item) => <TherapistContextMenu therapist={item} />}
+                />
+              </>
+            )}
+          </GridSection>
+
+          <GridSection title="Group" empty="No matching group.">
+            {programs.length > 0 && (
+              <>
+                <ProgramLegend />
+                <SquareGrid
+                  items={programs}
+                  label="Therapy group"
+                  getLabel={(item) => item.name}
+                  getStatus={programSquareStatus}
+                  onDragStart={(item) => onDragStart(programToPouchItem(item))}
+                  onDragEnd={onDragEnd}
+                  renderPreview={(item) => (
+                    <ProgramPreview
+                      program={item}
+                      lead={therapistById(data, item.leadTherapistId)}
+                    />
+                  )}
+                  renderContextMenu={(item) => <ProgramContextMenu program={item} />}
                 />
               </>
             )}
@@ -194,7 +298,7 @@ export function ClientScreen({
                 <NoteLegend />
                 <SquareGrid
                   items={notes}
-                  label="Note"
+                  label="Session note"
                   getLabel={(note) => `${note.id}: ${note.status}`}
                   getStatus={noteSquareStatus}
                   onDragStart={(note) => onDragStart(noteToPouchItem(note))}
@@ -203,11 +307,7 @@ export function ClientScreen({
                     canDropOnNote ? (note, event) => handleDropOnNote(note.id, event) : undefined
                   }
                   renderPreview={(note) => (
-                    <NotePreview
-                      note={note}
-                      client={client}
-                      therapist={therapistById(data, note.therapistId)}
-                    />
+                    <NotePreview note={note} client={client} therapist={therapist} />
                   )}
                   renderContextMenu={(note) => <NoteContextMenu note={note} />}
                 />
@@ -221,17 +321,13 @@ export function ClientScreen({
                 <RecordingLegend />
                 <SquareGrid
                   items={recordings}
-                  label="Recording"
+                  label="Audio recording"
                   getLabel={(recording) => recording.id}
                   getStatus={recordingSquareStatus}
                   onDragStart={(recording) => onDragStart(recordingToPouchItem(recording))}
                   onDragEnd={onDragEnd}
                   renderPreview={(recording) => (
-                    <RecordingPreview
-                      recording={recording}
-                      client={client}
-                      therapist={therapistById(data, recording.therapistId)}
-                    />
+                    <RecordingPreview recording={recording} client={client} therapist={therapist} />
                   )}
                   renderContextMenu={(recording) => <RecordingContextMenu recording={recording} />}
                 />

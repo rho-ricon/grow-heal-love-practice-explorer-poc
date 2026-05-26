@@ -47,6 +47,22 @@ export function tasksForClient(data: PracticeData, clientId: string): PracticeTa
   return data.tasks.filter((task) => task.clientId === clientId);
 }
 
+export function notesForSession(data: PracticeData, sessionId: string): ClinicalNote[] {
+  return data.notes.filter((note) => note.sessionId === sessionId);
+}
+
+export function recordingsForSession(data: PracticeData, sessionId: string): Recording[] {
+  return data.recordings.filter((recording) => recording.sessionId === sessionId);
+}
+
+export function transcriptsForSession(data: PracticeData, sessionId: string): Transcript[] {
+  return data.transcripts.filter((transcript) => transcript.sessionId === sessionId);
+}
+
+export function tasksForSession(data: PracticeData, sessionId: string): PracticeTask[] {
+  return data.tasks.filter((task) => task.sessionId === sessionId);
+}
+
 export function sessionsForClient(data: PracticeData, clientId: string): PracticeSession[] {
   return data.sessions.filter((session) => session.clientId === clientId);
 }

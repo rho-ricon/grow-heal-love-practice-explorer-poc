@@ -8,19 +8,14 @@ import { PracticeOverview, useOverviewCounts } from './PracticeOverview';
 import { ProgramScreen } from './ProgramScreen';
 import type { CarriedPracticeItem } from './pouchItems';
 import { type DropMenuState, RelationshipDropMenu } from './RelationshipDropMenu';
+import { SessionScreen } from './SessionScreen';
 import { TherapistScreen } from './TherapistScreen';
-import type {
-  Administrator,
-  Client,
-  ClinicalNote,
-  PracticeSession,
-  Program,
-  Therapist,
-} from './types';
+import type { Administrator, Client, PracticeSession, Program, Therapist } from './types';
 
 type Selection =
   | { type: 'client'; client: Client }
   | { type: 'therapist'; therapist: Therapist }
+  | { type: 'session'; session: PracticeSession }
   | { type: 'program'; program: Program }
   | null;
 
@@ -141,18 +136,6 @@ export function PracticeExplorer() {
     }
   }
 
-  function handleDropOnNote(note: ClinicalNote, event: DragEvent<HTMLElement>) {
-    if (dragged?.kind !== 'transcript') return;
-
-    openDropMenu({
-      type: 'transcript-note',
-      transcript: dragged.transcript,
-      note,
-      x: event.clientX,
-      y: event.clientY,
-    });
-  }
-
   function openDropMenu(drop: DropMenuState) {
     setDropMenu(drop);
     setDragged(null);
@@ -165,6 +148,11 @@ export function PracticeExplorer() {
 
   function openTherapist(therapist: Therapist) {
     setSelection({ type: 'therapist', therapist });
+    setDropMenu(null);
+  }
+
+  function openSession(session: PracticeSession) {
+    setSelection({ type: 'session', session });
     setDropMenu(null);
   }
 
@@ -187,6 +175,7 @@ export function PracticeExplorer() {
           dragged={dragged}
           onOpenClient={openClient}
           onOpenTherapist={openTherapist}
+          onOpenSession={openSession}
           onOpenProgram={openProgram}
           onDragStart={setDragged}
           onDragEnd={() => setDragged(null)}
@@ -194,7 +183,6 @@ export function PracticeExplorer() {
           onDropOnAdministrator={handleDropOnAdministrator}
           onDropOnProgram={handleDropOnProgram}
           onDropOnSession={handleDropOnSession}
-          onDropOnNote={handleDropOnNote}
         />
       </Screen>
 
@@ -228,6 +216,7 @@ export function PracticeExplorer() {
                 data={data}
                 client={selection.client}
                 dragged={dragged}
+                onOpenSession={openSession}
                 onDragStart={setDragged}
                 onDragEnd={() => setDragged(null)}
                 onDropMenu={openDropMenu}
@@ -239,6 +228,19 @@ export function PracticeExplorer() {
                 therapist={selection.therapist}
                 dragged={dragged}
                 onOpenClient={openClient}
+                onOpenSession={openSession}
+                onDragStart={setDragged}
+                onDragEnd={() => setDragged(null)}
+                onDropMenu={openDropMenu}
+              />
+            )}
+            {selection?.type === 'session' && (
+              <SessionScreen
+                data={data}
+                session={selection.session}
+                dragged={dragged}
+                onOpenClient={openClient}
+                onOpenTherapist={openTherapist}
                 onDragStart={setDragged}
                 onDragEnd={() => setDragged(null)}
                 onDropMenu={openDropMenu}
@@ -250,6 +252,7 @@ export function PracticeExplorer() {
                 program={selection.program}
                 dragged={dragged}
                 onOpenClient={openClient}
+                onOpenSession={openSession}
                 onDragStart={setDragged}
                 onDragEnd={() => setDragged(null)}
                 onDropMenu={openDropMenu}

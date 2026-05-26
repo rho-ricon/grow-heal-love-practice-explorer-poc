@@ -51,13 +51,14 @@ import {
   sessionSquareStatus,
   taskSquareStatus,
 } from './status';
-import type { Client, PracticeData, Therapist } from './types';
+import type { Client, PracticeData, PracticeSession, Therapist } from './types';
 
 export function TherapistScreen({
   data,
   therapist,
   dragged,
   onOpenClient,
+  onOpenSession,
   onDragStart,
   onDragEnd,
   onDropMenu,
@@ -66,6 +67,7 @@ export function TherapistScreen({
   therapist: Therapist;
   dragged: CarriedPracticeItem | null;
   onOpenClient: (client: Client) => void;
+  onOpenSession: (session: PracticeSession) => void;
   onDragStart: (item: CarriedPracticeItem) => void;
   onDragEnd: () => void;
   onDropMenu: (drop: DropMenuState) => void;
@@ -182,6 +184,7 @@ export function TherapistScreen({
                   label="Session"
                   getLabel={(session) => `${formatDateTime(session.startsAt)} · ${session.status}`}
                   getStatus={sessionSquareStatus}
+                  onPick={onOpenSession}
                   onDragStart={(session) => onDragStart(sessionToPouchItem(session))}
                   onDragEnd={onDragEnd}
                   onDrop={

@@ -4,77 +4,58 @@ import { SquareGrid } from '../../components/SquareGrid';
 import {
   AdministratorContextMenu,
   ClientContextMenu,
-  NoteContextMenu,
   ProgramContextMenu,
-  RecordingContextMenu,
   SessionContextMenu,
   TaskContextMenu,
   TherapistContextMenu,
-  TranscriptContextMenu,
 } from './contextMenus';
 import {
   AdministratorLegend,
   ClientLegend,
-  NoteLegend,
   ProgramLegend,
-  RecordingLegend,
   SessionLegend,
   TaskLegend,
   TherapistLegend,
-  TranscriptLegend,
 } from './legends';
 import { clientById, programById, therapistById } from './lookups';
 import {
   administratorToPouchItem,
   type CarriedPracticeItem,
   clientToPouchItem,
-  noteToPouchItem,
   programToPouchItem,
-  recordingToPouchItem,
   sessionToPouchItem,
   taskToPouchItem,
   therapistToPouchItem,
-  transcriptToPouchItem,
 } from './pouchItems';
 import {
   AdministratorPreview,
   ClientPreview,
-  NotePreview,
   ProgramPreview,
-  RecordingPreview,
   SessionPreview,
   TaskPreview,
   TherapistPreview,
-  TranscriptPreview,
 } from './previews';
 import {
   administratorSearchText,
   clientSearchText,
   filterItems,
-  noteSearchText,
   programSearchText,
-  recordingSearchText,
   sessionSearchText,
   taskSearchText,
   therapistSearchText,
-  transcriptSearchText,
 } from './search';
 import {
   administratorSquareStatus,
   clientSquareStatus,
   formatDateTime,
-  noteSquareStatus,
   programSquareStatus,
-  recordingSquareStatus,
   sessionSquareStatus,
   taskSquareStatus,
   therapistSquareStatus,
-  transcriptSquareStatus,
 } from './status';
 import type {
   Administrator,
   Client,
-  ClinicalNote,
   PracticeData,
   PracticeSession,
   Program,
@@ -85,7 +66,7 @@ export function useOverviewCounts(data: PracticeData, query: string) {
   return {
     clients: filterItems(data.clients, query, clientSearchText).length,
     therapists: filterItems(data.therapists, query, therapistSearchText).length,
-    tasks: filterItems(data.tasks, query, (task) =>
+    tasks: filterItems(openTasks(data), query, (task) =>
       taskSearchText(task, data.therapists, data.administrators),
     ).length,
   };
@@ -97,6 +78,7 @@ export function PracticeOverview({
   dragged,
   onOpenClient,
   onOpenTherapist,
+  onOpenSession,
   onOpenProgram,
   onDragStart,
   onDragEnd,
@@ -104,13 +86,13 @@ export function PracticeOverview({
   onDropOnAdministrator,
   onDropOnProgram,
   onDropOnSession,
-  onDropOnNote,
 }: {
   data: PracticeData;
   query: string;
   dragged: CarriedPracticeItem | null;
   onOpenClient: (client: Client) => void;
   onOpenTherapist: (therapist: Therapist) => void;
+  onOpenSession: (session: PracticeSession) => void;
   onOpenProgram: (program: Program) => void;
   onDragStart: (item: CarriedPracticeItem) => void;
   onDragEnd: () => void;
@@ -118,7 +100,6 @@ export function PracticeOverview({
   onDropOnAdministrator: (administrator: Administrator, event: DragEvent<HTMLElement>) => void;
   onDropOnProgram: (program: Program, event: DragEvent<HTMLElement>) => void;
   onDropOnSession: (session: PracticeSession, event: DragEvent<HTMLElement>) => void;
-  onDropOnNote: (note: ClinicalNote, event: DragEvent<HTMLElement>) => void;
 }) {
   const therapists = useMemo(
     () => filterItems(data.therapists, query, therapistSearchText),
@@ -133,24 +114,15 @@ export function PracticeOverview({
     [data.clients, query],
   );
   const sessions = useMemo(
-    () => filterItems(data.sessions, query, sessionSearchText),
-    [data.sessions, query],
-  );
-  const notes = useMemo(() => filterItems(data.notes, query, noteSearchText), [data.notes, query]);
-  const recordings = useMemo(
-    () => filterItems(data.recordings, query, recordingSearchText),
-    [data.recordings, query],
-  );
-  const transcripts = useMemo(
-    () => filterItems(data.transcripts, query, transcriptSearchText),
-    [data.transcripts, query],
+    () => filterItems(cockpitSessions(data), query, sessionSearchText),
+    [data, query],
   );
   const tasks = useMemo(
     () =>
-      filterItems(data.tasks, query, (task) =>
+      filterItems(openTasks(data), query, (task) =>
         taskSearchText(task, data.therapists, data.administrators),
       ),
-    [data.administrators, data.tasks, data.therapists, query],
+    [data, query],
   );
   const programs = useMemo(
     () => filterItems(data.programs, query, programSearchText),
@@ -162,7 +134,6 @@ export function PracticeOverview({
   const canDropOnAdministrator = dragged?.kind === 'client' || dragged?.kind === 'task';
   const canDropOnProgram = dragged?.kind === 'client';
   const canDropOnSession = dragged?.kind === 'recording' || dragged?.kind === 'therapist';
-  const canDropOnNote = dragged?.kind === 'transcript';
 
   return (
     <div className="sections">
@@ -214,7 +185,7 @@ export function PracticeOverview({
         )}
       </GridSection>
 
-      <GridSection title="Clients" empty="No matching clients.">
+      <GridSection title="Clients + Intake" empty="No matching clients.">
         {clients.length > 0 && (
           <>
             <ClientLegend />
@@ -242,7 +213,7 @@ export function PracticeOverview({
         )}
       </GridSection>
 
-      <GridSection title="Sessions" empty="No matching sessions.">
+      <GridSection title="Session Agenda" empty="No matching agenda sessions.">
         {sessions.length > 0 && (
           <>
             <SessionLegend />
@@ -251,6 +222,7 @@ export function PracticeOverview({
               label="Session"
               getLabel={(session) => `${formatDateTime(session.startsAt)} · ${session.status}`}
               getStatus={sessionSquareStatus}
+              onPick={onOpenSession}
               onDragStart={(session) => onDragStart(sessionToPouchItem(session))}
               onDragEnd={onDragEnd}
               onDrop={canDropOnSession ? onDropOnSession : undefined}
@@ -268,74 +240,7 @@ export function PracticeOverview({
         )}
       </GridSection>
 
-      <GridSection title="Notes" empty="No matching notes.">
-        {notes.length > 0 && (
-          <>
-            <NoteLegend />
-            <SquareGrid
-              items={notes}
-              label="Session note"
-              getLabel={(note) => `${note.id}: ${note.status}`}
-              getStatus={noteSquareStatus}
-              onDragStart={(note) => onDragStart(noteToPouchItem(note))}
-              onDragEnd={onDragEnd}
-              onDrop={canDropOnNote ? onDropOnNote : undefined}
-              renderPreview={(note) => (
-                <NotePreview
-                  note={note}
-                  client={clientById(data, note.clientId)}
-                  therapist={therapistById(data, note.therapistId)}
-                />
-              )}
-              renderContextMenu={(note) => <NoteContextMenu note={note} />}
-            />
-          </>
-        )}
-      </GridSection>
-
-      <GridSection title="Recordings" empty="No matching recordings.">
-        {recordings.length > 0 && (
-          <>
-            <RecordingLegend />
-            <SquareGrid
-              items={recordings}
-              label="Audio recording"
-              getLabel={(recording) => recording.id}
-              getStatus={recordingSquareStatus}
-              onDragStart={(recording) => onDragStart(recordingToPouchItem(recording))}
-              onDragEnd={onDragEnd}
-              renderPreview={(recording) => (
-                <RecordingPreview
-                  recording={recording}
-                  client={clientById(data, recording.clientId)}
-                  therapist={therapistById(data, recording.therapistId)}
-                />
-              )}
-              renderContextMenu={(recording) => <RecordingContextMenu recording={recording} />}
-            />
-          </>
-        )}
-      </GridSection>
-
-      <GridSection title="Transcripts" empty="No matching transcripts.">
-        {transcripts.length > 0 && (
-          <>
-            <TranscriptLegend />
-            <SquareGrid
-              items={transcripts}
-              label="Transcript"
-              getLabel={(transcript) => transcript.id}
-              getStatus={transcriptSquareStatus}
-              onDragStart={(transcript) => onDragStart(transcriptToPouchItem(transcript))}
-              onDragEnd={onDragEnd}
-              renderPreview={(transcript) => <TranscriptPreview transcript={transcript} />}
-              renderContextMenu={(transcript) => <TranscriptContextMenu transcript={transcript} />}
-            />
-          </>
-        )}
-      </GridSection>
-
-      <GridSection title="Tasks" empty="No matching tasks.">
+      <GridSection title="Open Work Queue" empty="No matching open tasks.">
         {tasks.length > 0 && (
           <>
             <TaskLegend />
@@ -392,4 +297,12 @@ export function PracticeOverview({
       </GridSection>
     </div>
   );
+}
+
+function cockpitSessions(data: PracticeData) {
+  return data.sessions.filter((session) => session.status !== 'canceled');
+}
+
+function openTasks(data: PracticeData) {
+  return data.tasks.filter((task) => task.status !== 'done');
 }
