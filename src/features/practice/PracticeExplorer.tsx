@@ -7,15 +7,24 @@ import { PRACTICE_NAME, practiceData } from './data';
 import { PracticeOverview, useOverviewCounts } from './PracticeOverview';
 import { ProgramScreen } from './ProgramScreen';
 import type { CarriedPracticeItem } from './pouchItems';
+import { RecordingScreen } from './RecordingScreen';
 import { type DropMenuState, RelationshipDropMenu } from './RelationshipDropMenu';
 import { SessionScreen } from './SessionScreen';
 import { TherapistScreen } from './TherapistScreen';
-import type { Administrator, Client, PracticeSession, Program, Therapist } from './types';
+import type {
+  Administrator,
+  Client,
+  PracticeSession,
+  Program,
+  Recording,
+  Therapist,
+} from './types';
 
 type Selection =
   | { type: 'client'; client: Client }
   | { type: 'therapist'; therapist: Therapist }
   | { type: 'session'; session: PracticeSession }
+  | { type: 'recording'; recording: Recording }
   | { type: 'program'; program: Program }
   | null;
 
@@ -156,6 +165,11 @@ export function PracticeExplorer() {
     setDropMenu(null);
   }
 
+  function openRecording(recording: Recording) {
+    setSelection({ type: 'recording', recording });
+    setDropMenu(null);
+  }
+
   function openProgram(program: Program) {
     setSelection({ type: 'program', program });
     setDropMenu(null);
@@ -217,6 +231,7 @@ export function PracticeExplorer() {
                 client={selection.client}
                 dragged={dragged}
                 onOpenSession={openSession}
+                onOpenRecording={openRecording}
                 onDragStart={setDragged}
                 onDragEnd={() => setDragged(null)}
                 onDropMenu={openDropMenu}
@@ -241,6 +256,18 @@ export function PracticeExplorer() {
                 dragged={dragged}
                 onOpenClient={openClient}
                 onOpenTherapist={openTherapist}
+                onOpenRecording={openRecording}
+                onDragStart={setDragged}
+                onDragEnd={() => setDragged(null)}
+                onDropMenu={openDropMenu}
+              />
+            )}
+            {selection?.type === 'recording' && (
+              <RecordingScreen
+                data={data}
+                recording={selection.recording}
+                dragged={dragged}
+                onOpenSession={openSession}
                 onDragStart={setDragged}
                 onDragEnd={() => setDragged(null)}
                 onDropMenu={openDropMenu}

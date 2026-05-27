@@ -1,3 +1,4 @@
+import { transcriptSegments } from './mock/transcriptSegments';
 import type {
   Administrator,
   Client,
@@ -9,6 +10,7 @@ import type {
   Recording,
   Therapist,
   Transcript,
+  TranscriptSegment,
 } from './types';
 
 export function therapistById(data: PracticeData, id?: string): Therapist | undefined {
@@ -37,6 +39,20 @@ export function recordingById(data: PracticeData, id?: string): Recording | unde
 
 export function transcriptById(data: PracticeData, id?: string): Transcript | undefined {
   return data.transcripts.find((transcript) => transcript.id === id);
+}
+
+export function transcriptForRecording(
+  data: PracticeData,
+  recording: Recording,
+): Transcript | undefined {
+  return data.transcripts.find(
+    (transcript) =>
+      transcript.id === recording.transcriptId || transcript.recordingId === recording.id,
+  );
+}
+
+export function segmentsForTranscript(transcriptId?: string): TranscriptSegment[] {
+  return transcriptSegments.filter((segment) => segment.transcriptId === transcriptId);
 }
 
 export function programById(data: PracticeData, id?: string): Program | undefined {

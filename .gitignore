@@ -2,6 +2,9 @@ node_modules
 /dist
 .vite.log
 .vite.pid
+public/audio/*
+!public/audio/README.md
+!public/audio/jung-interview.vtt
 .env
 .env.*
 .DS_Store

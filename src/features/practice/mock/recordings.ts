@@ -10,6 +10,7 @@ export const recordings: Recording[] = [
     durationMinutes: 49,
     capturedAt: '2026-05-26T14:52:00-07:00',
     retentionReviewAt: '2026-06-25T14:52:00-07:00',
+    audioSrc: '/audio/jung-interview.mp3',
     transcriptId: 'tr-4004',
   },
   {
@@ -21,6 +22,7 @@ export const recordings: Recording[] = [
     durationMinutes: 51,
     capturedAt: '2026-05-25T16:52:00-07:00',
     retentionReviewAt: '2026-06-24T16:52:00-07:00',
+    audioSrc: '/audio/jung-interview.mp3',
     transcriptId: 'tr-4006',
   },
   {
@@ -32,6 +34,7 @@ export const recordings: Recording[] = [
     durationMinutes: 50,
     capturedAt: '2026-05-25T10:51:00-07:00',
     retentionReviewAt: '2026-05-27T10:51:00-07:00',
+    audioSrc: '/audio/jung-interview.mp3',
     transcriptId: 'tr-4007',
   },
   {
@@ -53,5 +56,6 @@ export const recordings: Recording[] = [
     durationMinutes: 48,
     capturedAt: '2026-05-24T09:52:00-07:00',
     retentionReviewAt: '2026-06-23T09:52:00-07:00',
+    audioSrc: '/audio/jung-interview.mp3',
   },
 ];

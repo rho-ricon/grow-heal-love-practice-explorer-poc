@@ -98,7 +98,19 @@ export type Recording = {
   durationMinutes: number;
   capturedAt: string;
   retentionReviewAt: string;
+  audioSrc?: string;
   transcriptId?: string;
+};
+
+export type TranscriptSegment = {
+  id: string;
+  transcriptId: string;
+  startSeconds: number;
+  endSeconds: number;
+  speaker: string;
+  text: string;
+  confidence: number;
+  flags: string[];
 };
 
 export type Transcript = {

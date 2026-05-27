@@ -22,6 +22,7 @@ Open http://localhost:5173/.
 - Right-click a square for Base UI `ContextMenu` copy actions.
 - Drag clients onto therapists, admins, or groups for non-mutating workflow actions.
 - Drag tasks onto people, recordings onto sessions, transcripts onto notes, and notes onto therapists.
+- Review session recordings with native audio, Base UI `Meter` progress/review indicators, and timestamped mock transcript segments.
 - Carry entities in a floating pouch across drawer views.
 - Search filters all grids on the current screen.
 
@@ -32,7 +33,7 @@ Open http://localhost:5173/.
 - **Clients** — synthetic handles with lifecycle stage, acuity, paperwork, consent, matching, and open task counts.
 - **Sessions** — status, modality, location, linked notes, recordings, transcripts, and session-tied tasks.
 - **Notes** — nested under client, therapist, and session workspaces; draft/review/signed/late states, due dates, and supervision-review flags.
-- **Recordings** — nested under client and session workspaces; consent/upload/transcription/readiness/retention states.
+- **Recordings** — nested under client and session workspaces; consent/upload/transcription/readiness/retention states plus a recording-review drawer.
 - **Transcripts** — nested under client and session workspaces; transcription, review, redaction, and note-linking states.
 - **Tasks** — intake, billing, scheduling, compliance, and clinical work queues.
 - **Groups** — capacity, enrollment, cadence, focus, and lead therapist.
@@ -52,6 +53,10 @@ bun run check
 ```
 
 Use `bun run format` to apply Biome formatting/import organization.
+
+## Optional demo audio
+
+Audio files are not committed. Recording examples look for `/audio/jung-interview.mp3`. If you have rights to use a local copy, place it at `public/audio/jung-interview.mp3`. See `public/audio/README.md` for the suggested `yt-dlp` command.
 
 ## Project shape
 

@@ -57,13 +57,14 @@ import {
   taskSquareStatus,
   transcriptSquareStatus,
 } from './status';
-import type { Client, PracticeData, PracticeSession } from './types';
+import type { Client, PracticeData, PracticeSession, Recording } from './types';
 
 export function ClientScreen({
   data,
   client,
   dragged,
   onOpenSession,
+  onOpenRecording,
   onDragStart,
   onDragEnd,
   onDropMenu,
@@ -72,6 +73,7 @@ export function ClientScreen({
   client: Client;
   dragged: CarriedPracticeItem | null;
   onOpenSession: (session: PracticeSession) => void;
+  onOpenRecording: (recording: Recording) => void;
   onDragStart: (item: CarriedPracticeItem) => void;
   onDragEnd: () => void;
   onDropMenu: (drop: DropMenuState) => void;
@@ -224,6 +226,7 @@ export function ClientScreen({
                   label="Recording"
                   getLabel={(recording) => recording.id}
                   getStatus={recordingSquareStatus}
+                  onPick={onOpenRecording}
                   onDragStart={(recording) => onDragStart(recordingToPouchItem(recording))}
                   onDragEnd={onDragEnd}
                   renderPreview={(recording) => (
