@@ -4,6 +4,8 @@ A Bun + Vite + React + Base UI experiment for exploring a psychotherapy group-pr
 
 This app uses **mocked data only**. The synthetic client handles, sessions, notes, recordings, and transcripts are not real PHI.
 
+Live app: https://rho-ricon.github.io/grow-heal-love-practice-explorer-poc/
+
 ## Run locally
 
 ```bash
@@ -56,7 +58,7 @@ Use `bun run format` to apply Biome formatting/import organization.
 
 ## Optional demo audio
 
-Audio files are not committed. Recording examples look for `/audio/jung-interview.mp3`. If you have rights to use a local copy, place it at `public/audio/jung-interview.mp3`. See `public/audio/README.md` for the suggested `yt-dlp` command.
+Audio files are not committed or deployed. Recording examples look for `/audio/jung-interview.mp3`. If you have rights to use a local copy, place it at `public/audio/jung-interview.mp3`. See `public/audio/README.md` for the suggested `yt-dlp` command.
 
 ## Project shape
 
