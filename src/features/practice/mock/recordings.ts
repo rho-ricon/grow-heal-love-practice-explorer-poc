@@ -1,5 +1,15 @@
 import type { Recording } from '../types';
 
+export const madnessRadioDemo = {
+  title: 'Compassionate Therapy | Michael Montgomery | Madness Radio',
+  pageUrl: 'https://www.madnessradio.net/compassionate-therapy-michael-montgomery-madness-radio/',
+  audioUrl:
+    'https://www.madnessradio.net/audio/MadnessRadio2025-09-17CompassionateTherapyMichaelMontgomery58MIN.mp3',
+  transcriptUrl:
+    'https://www.madnessradio.net/audio-transcripts/MadnessRadio2025-09-17TherapySwimmingUpstreamMichaelMontgomeryTRANSCRIPT.txt',
+  license: 'Creative Commons BY-NC-ND 2.5-style license; unaltered noncommercial sharing.',
+} as const;
+
 export const recordings: Recording[] = [
   {
     id: 're-3004',
@@ -7,10 +17,10 @@ export const recordings: Recording[] = [
     clientId: 'cl-ember',
     therapistId: 'th-naomi',
     status: 'reviewed',
-    durationMinutes: 49,
+    durationMinutes: 58,
     capturedAt: '2026-05-26T14:52:00-07:00',
     retentionReviewAt: '2026-06-25T14:52:00-07:00',
-    audioSrc: '/audio/jung-interview.mp3',
+    audioSrc: madnessRadioDemo.audioUrl,
     transcriptId: 'tr-4004',
   },
   {
@@ -19,10 +29,10 @@ export const recordings: Recording[] = [
     clientId: 'cl-iris',
     therapistId: 'th-jules',
     status: 'ready',
-    durationMinutes: 51,
+    durationMinutes: 58,
     capturedAt: '2026-05-25T16:52:00-07:00',
     retentionReviewAt: '2026-06-24T16:52:00-07:00',
-    audioSrc: '/audio/jung-interview.mp3',
+    audioSrc: madnessRadioDemo.audioUrl,
     transcriptId: 'tr-4006',
   },
   {
@@ -31,10 +41,10 @@ export const recordings: Recording[] = [
     clientId: 'cl-juniper',
     therapistId: 'th-ana',
     status: 'delete-due',
-    durationMinutes: 50,
+    durationMinutes: 58,
     capturedAt: '2026-05-25T10:51:00-07:00',
     retentionReviewAt: '2026-05-27T10:51:00-07:00',
-    audioSrc: '/audio/jung-interview.mp3',
+    audioSrc: madnessRadioDemo.audioUrl,
     transcriptId: 'tr-4007',
   },
   {
@@ -53,9 +63,9 @@ export const recordings: Recording[] = [
     clientId: 'cl-lumen',
     therapistId: 'th-melissa',
     status: 'uploaded',
-    durationMinutes: 48,
+    durationMinutes: 58,
     capturedAt: '2026-05-24T09:52:00-07:00',
     retentionReviewAt: '2026-06-23T09:52:00-07:00',
-    audioSrc: '/audio/jung-interview.mp3',
+    audioSrc: madnessRadioDemo.audioUrl,
   },
 ];

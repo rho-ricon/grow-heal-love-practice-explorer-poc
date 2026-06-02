@@ -153,8 +153,8 @@ export function TherapistScreen({
         onSearchChange={setQuery}
         count={`${therapist.role} / ${clients.length} clients / ${therapist.noteBacklog} notes`}
       >
-        <div className="sections">
-          <GridSection title="Caseload" empty="No matching clients.">
+        <div className="sections packedSections">
+          <GridSection title="Caseload" empty="No matching clients." squareCount={clients.length}>
             {clients.length > 0 && (
               <>
                 <ClientLegend />
@@ -175,7 +175,7 @@ export function TherapistScreen({
             )}
           </GridSection>
 
-          <GridSection title="Sessions" empty="No matching sessions.">
+          <GridSection title="Sessions" empty="No matching sessions." squareCount={sessions.length}>
             {sessions.length > 0 && (
               <>
                 <SessionLegend />
@@ -205,7 +205,7 @@ export function TherapistScreen({
             )}
           </GridSection>
 
-          <GridSection title="Notes" empty="No matching notes.">
+          <GridSection title="Notes" empty="No matching notes." squareCount={notes.length}>
             {notes.length > 0 && (
               <>
                 <NoteLegend />
@@ -232,7 +232,7 @@ export function TherapistScreen({
             )}
           </GridSection>
 
-          <GridSection title="Tasks" empty="No matching tasks.">
+          <GridSection title="Tasks" empty="No matching tasks." squareCount={tasks.length}>
             {tasks.length > 0 && (
               <>
                 <TaskLegend />
@@ -263,7 +263,7 @@ export function TherapistScreen({
             )}
           </GridSection>
 
-          <GridSection title="Groups" empty="No matching groups.">
+          <GridSection title="Groups" empty="No matching groups." squareCount={programs.length}>
             {programs.length > 0 && (
               <>
                 <ProgramLegend />

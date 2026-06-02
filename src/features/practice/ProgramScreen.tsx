@@ -80,8 +80,8 @@ export function ProgramScreen({
         onSearchChange={setQuery}
         count={`${program.status} / ${program.enrolled}/${program.capacity} enrolled / lead ${lead?.name || 'unassigned'}`}
       >
-        <div className="sections">
-          <GridSection title="Members" empty="No matching clients.">
+        <div className="sections packedSections">
+          <GridSection title="Members" empty="No matching clients." squareCount={clients.length}>
             {clients.length > 0 && (
               <>
                 <ClientLegend />
@@ -106,7 +106,11 @@ export function ProgramScreen({
             )}
           </GridSection>
 
-          <GridSection title="Group Sessions" empty="No matching sessions.">
+          <GridSection
+            title="Group Sessions"
+            empty="No matching sessions."
+            squareCount={sessions.length}
+          >
             {sessions.length > 0 && (
               <>
                 <SessionLegend />

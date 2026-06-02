@@ -159,8 +159,8 @@ export function ClientScreen({
         onSearchChange={setQuery}
         count={`${client.stage} / ${therapist?.name || 'unmatched'} / ${tasks.length} tasks`}
       >
-        <div className="sections">
-          <GridSection title="Sessions" empty="No matching sessions.">
+        <div className="sections packedSections">
+          <GridSection title="Sessions" empty="No matching sessions." squareCount={sessions.length}>
             {sessions.length > 0 && (
               <>
                 <SessionLegend />
@@ -190,7 +190,7 @@ export function ClientScreen({
             )}
           </GridSection>
 
-          <GridSection title="Notes" empty="No matching notes.">
+          <GridSection title="Notes" empty="No matching notes." squareCount={notes.length}>
             {notes.length > 0 && (
               <>
                 <NoteLegend />
@@ -217,7 +217,11 @@ export function ClientScreen({
             )}
           </GridSection>
 
-          <GridSection title="Recordings" empty="No matching recordings.">
+          <GridSection
+            title="Recordings"
+            empty="No matching recordings."
+            squareCount={recordings.length}
+          >
             {recordings.length > 0 && (
               <>
                 <RecordingLegend />
@@ -242,7 +246,11 @@ export function ClientScreen({
             )}
           </GridSection>
 
-          <GridSection title="Transcripts" empty="No matching transcripts.">
+          <GridSection
+            title="Transcripts"
+            empty="No matching transcripts."
+            squareCount={transcripts.length}
+          >
             {transcripts.length > 0 && (
               <>
                 <TranscriptLegend />
@@ -262,7 +270,7 @@ export function ClientScreen({
             )}
           </GridSection>
 
-          <GridSection title="Tasks" empty="No matching tasks.">
+          <GridSection title="Tasks" empty="No matching tasks." squareCount={tasks.length}>
             {tasks.length > 0 && (
               <>
                 <TaskLegend />

@@ -136,8 +136,12 @@ export function PracticeOverview({
   const canDropOnSession = dragged?.kind === 'recording' || dragged?.kind === 'therapist';
 
   return (
-    <div className="sections">
-      <GridSection title="Therapists" empty="No matching therapists.">
+    <div className="sections packedSections">
+      <GridSection
+        title="Therapists"
+        empty="No matching therapists."
+        squareCount={therapists.length}
+      >
         {therapists.length > 0 && (
           <>
             <TherapistLegend />
@@ -162,7 +166,11 @@ export function PracticeOverview({
         )}
       </GridSection>
 
-      <GridSection title="Administrators" empty="No matching administrators.">
+      <GridSection
+        title="Administrators"
+        empty="No matching administrators."
+        squareCount={administrators.length}
+      >
         {administrators.length > 0 && (
           <>
             <AdministratorLegend />
@@ -185,7 +193,11 @@ export function PracticeOverview({
         )}
       </GridSection>
 
-      <GridSection title="Clients + Intake" empty="No matching clients.">
+      <GridSection
+        title="Clients + Intake"
+        empty="No matching clients."
+        squareCount={clients.length}
+      >
         {clients.length > 0 && (
           <>
             <ClientLegend />
@@ -213,7 +225,11 @@ export function PracticeOverview({
         )}
       </GridSection>
 
-      <GridSection title="Session Agenda" empty="No matching agenda sessions.">
+      <GridSection
+        title="Session Agenda"
+        empty="No matching agenda sessions."
+        squareCount={sessions.length}
+      >
         {sessions.length > 0 && (
           <>
             <SessionLegend />
@@ -240,7 +256,11 @@ export function PracticeOverview({
         )}
       </GridSection>
 
-      <GridSection title="Open Work Queue" empty="No matching open tasks.">
+      <GridSection
+        title="Open Work Queue"
+        empty="No matching open tasks."
+        squareCount={tasks.length}
+      >
         {tasks.length > 0 && (
           <>
             <TaskLegend />
@@ -271,7 +291,7 @@ export function PracticeOverview({
         )}
       </GridSection>
 
-      <GridSection title="Groups" empty="No matching groups.">
+      <GridSection title="Groups" empty="No matching groups." squareCount={programs.length}>
         {programs.length > 0 && (
           <>
             <ProgramLegend />

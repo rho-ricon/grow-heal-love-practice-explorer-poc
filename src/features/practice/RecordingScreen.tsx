@@ -12,6 +12,7 @@ import {
   therapistById,
   transcriptForRecording,
 } from './lookups';
+import { madnessRadioDemo } from './mock/recordings';
 import {
   type CarriedPracticeItem,
   noteToPouchItem,
@@ -178,8 +179,8 @@ export function RecordingScreen({
                   <track
                     default
                     kind="captions"
-                    label="Mock transcript captions"
-                    src="/audio/jung-interview.vtt"
+                    label="Madness Radio transcript excerpt captions"
+                    src="/audio/madness-radio-compassionate-therapy.vtt"
                     srcLang="en"
                   />
                 </audio>
@@ -187,10 +188,23 @@ export function RecordingScreen({
                 <p>No audio source linked.</p>
               )}
 
+              {recording.audioSrc === madnessRadioDemo.audioUrl && (
+                <p className="recordingSource">
+                  Demo audio from{' '}
+                  <a href={madnessRadioDemo.pageUrl} target="_blank" rel="noreferrer">
+                    {madnessRadioDemo.title}
+                  </a>
+                  . Transcript excerpts use the available{' '}
+                  <a href={madnessRadioDemo.transcriptUrl} target="_blank" rel="noreferrer">
+                    timestamped transcript
+                  </a>
+                  . {madnessRadioDemo.license}
+                </p>
+              )}
+
               {audioMissing && (
                 <p className="recordingNotice">
-                  Demo audio is not in git. Add an interview file at{' '}
-                  <code>public/audio/jung-interview.mp3</code> to activate playback.
+                  Remote demo audio could not be loaded. The transcript review panel remains usable.
                 </p>
               )}
 
